@@ -34,6 +34,8 @@ function getViewPort(){
 
     game.style.width=nw+"px";
     game.style.height=nh+"px";
+    game.style.left=((w-nw)/2)+"px";
+    game.style.top=((h-nh)/2)+"px";
 
     bh=Math.round(nh*bhp/100);
     bw=Math.round(nw*bwp/100);
