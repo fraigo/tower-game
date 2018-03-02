@@ -2,23 +2,30 @@
 var game=document.getElementById("game");
 var button=document.getElementById("button");
 var score=document.getElementById("score");
+var childs=[];
 
 function reset(){
-    w=0;
-    h=0;
-    ax=3;
-    ay=4;
+    windowWidth=0;
+    windowHeight=0;
+    relX=3;
+    relY=4;
     blocks=0;
-    bwp=48;
-    bhp=100/20;
-    nw=0;
-    nh=0;
+    defaultWidth=48;
+    defaultHeight=100/20;
+    viewportWidth=0;
+    viewportHeight=0;
     prevItem=null;
     currItem=null;
     vel=3;
     dir=1;
     lastTimeout=0;
     button.style.display='';
+    
+    itemWidth=0;
+    itemHeight=0;
+
+    getViewPort();
+    score.innerHTML=0;
 }
 
 
@@ -26,26 +33,23 @@ function reset(){
 
 function getViewPort(){
     //// https://stackoverflow.com/questions/1248081/get-the-browser-viewport-dimensions-with-javascript
-    w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    windowWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
     
-    nw=ax*100;
-    nh=ay*100;
+    viewportWidth=relX*100;
+    viewportHeight=relY*100;
 
-    game.style.width=nw+"px";
-    game.style.height=nh+"px";
-    game.style.left=((w-nw)/2)+"px";
-    game.style.top=((h-nh)/2)+"px";
+    game.style.width=viewportWidth+"px";
+    game.style.height=viewportHeight+"px";
+    game.style.left=((windowWidth-viewportWidth)/2)+"px";
+    game.style.top=((windowHeight-viewportHeight)/2)+"px";
 
-    bh=Math.round(nh*bhp/100);
-    bw=Math.round(nw*bwp/100);
+    itemHeight=Math.round(viewportHeight*defaultHeight/100);
+    itemWidth=Math.round(viewportWidth*defaultWidth/100);
 
 }
 
-document.body.onload=function(){
-    getViewPort();
-    
-}
+
 
 window.onresize=function(){
     getViewPort();
@@ -56,10 +60,7 @@ window.document.onmouseup=function(){
 }
 
 window.document.onkeyup=function(ev){
-    console.log(ev.keyCode);
-    if (ev.keyCode==32){
-        stop();
-    }
+       stop();
 }
 
 function stop(){
@@ -72,22 +73,23 @@ function stop(){
                 var prevStart=prevItem.style.left.split("p")[0]*1;
                 var prevEnd=prevStart+prevItem.style.width.split("p")[0]*1;
                 
-                bw=bw-Math.abs(prevStart-currentPos);
-                if (bw<0){
+                itemWidth=itemWidth-Math.abs(prevStart-currentPos);
+                if (itemWidth<0){
                     alert("You loose");
+                    reset();
                     return;
                 }
                 if (currentPos>prevStart){
-                    currItem.style.width=bw+"px";
+                    currItem.style.width=itemWidth+"px";
                 }else if (currentPos<prevStart){
-                    currItem.style.width=bw+"px";
+                    currItem.style.width=itemWidth+"px";
                     currItem.style.left=currentPos+Math.abs(prevStart-currentPos)+"px";
                 }
                 if(Math.round(currentPos)==Math.round(prevStart)){
                     currItem.style.backgroundColor="#8F8";
-                    addScore(bw);
+                    addScore(itemWidth);
                 }
-                addScore(bw);
+                addScore(itemWidth);
                 
                 vel+=0.5;
             }
@@ -97,13 +99,17 @@ function stop(){
 }
 
 function addScore(points){
-    score.innerHTML=score.innerText*1+Math.round(bw);
+    score.innerHTML=score.innerText*1+Math.round(itemWidth);
 }
     
 
 function start(){
-    nextBlock();
+    for(var i=0;i<childs.length;i++){
+        game.removeChild(childs[i]);
+    }
+    childs=[];
     button.style.display='none';
+    nextBlock();
 }
 
 function nextBlock(){
@@ -111,18 +117,19 @@ function nextBlock(){
     prevItem=currItem;
     currItem=document.createElement("div");
     currItem.style.position="absolute";
-    currItem.style.width=bw+"px";
-    currItem.style.height=(bh-2)+"px";
+    currItem.style.width=itemWidth+"px";
+    currItem.style.height=(itemHeight-2)+"px";
     currItem.className="bar";
-    currItem.style.top=(nh-bh*blocks)+"px";
+    currItem.style.top=(viewportHeight-itemHeight*blocks)+"px";
+    childs.push(currItem);
     game.appendChild(currItem);
-    console.log([blocks,vel,bw]);
+    console.log([blocks,vel,itemWidth]);
     move(currItem,0,vel);
 }
 
 function move(item,start,vel){
-    if (start+bw>=nw){
-        start=nw-bw;
+    if (start+itemWidth>=viewportWidth){
+        start=viewportWidth-itemWidth;
         dir=dir*-1;
     }
     if (start<0){
