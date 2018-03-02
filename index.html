@@ -9,13 +9,17 @@
 		
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <script src="html2canvas.min.js" ></script>
 </head>
 <body>
     <div id="game">
         <div id="toolbar">
-            <div id="left"><a href="./"><b>Towers</b></a></div>
-            <div id="center"><button id="button" onclick="start()">Start</button></div>
-            <div id="right"><code id="score">0</code></div>
+            <div id="left"><a href="index.html"><b>Towers</b></a></div>
+            <div id="center"><button id="button" class="not-exportable" onclick="start()">New Game</button></div>
+            <div id="right">
+                <code id="score">0</code>
+                <span id="star">0</span>
+            </div>
         </div>
     </div>
     <script src="game.js" ></script>

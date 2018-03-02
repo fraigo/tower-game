@@ -2,6 +2,8 @@
 var game=document.getElementById("game");
 var button=document.getElementById("button");
 var score=document.getElementById("score");
+var stars=document.getElementById("star");
+
 var childs=[];
 
 function reset(){
@@ -10,7 +12,7 @@ function reset(){
     relX=3;
     relY=4;
     blocks=0;
-    defaultWidth=48;
+    defaultWidth=45;
     defaultHeight=100/20;
     viewportWidth=0;
     viewportHeight=0;
@@ -19,13 +21,14 @@ function reset(){
     vel=3;
     dir=1;
     lastTimeout=0;
-    button.style.display='';
+    
     
     itemWidth=0;
     itemHeight=0;
 
     getViewPort();
-    score.innerHTML=0;
+    resetPoints(score);
+    resetPoints(stars);
 }
 
 
@@ -63,6 +66,15 @@ window.document.onkeyup=function(ev){
        stop();
 }
 
+
+function message(title,text){
+    var message=title;
+    if (text){
+        message+=" "+text;
+    }
+    alert(message);
+}
+
 function stop(){
     if (lastTimeout){
         window.clearTimeout(lastTimeout);
@@ -73,10 +85,10 @@ function stop(){
                 var prevStart=prevItem.style.left.split("p")[0]*1;
                 var prevEnd=prevStart+prevItem.style.width.split("p")[0]*1;
                 
-                itemWidth=itemWidth-Math.abs(prevStart-currentPos);
-                if (itemWidth<0){
-                    alert("You loose");
-                    reset();
+                itemWidth=Math.round(itemWidth-Math.abs(prevStart-currentPos));
+                if (itemWidth<1){
+                    message("You loose",score.innerText+" pts.");
+                    button.style.display='';
                     return;
                 }
                 if (currentPos>prevStart){
@@ -87,9 +99,15 @@ function stop(){
                 }
                 if(Math.round(currentPos)==Math.round(prevStart)){
                     currItem.style.backgroundColor="#8F8";
-                    addScore(itemWidth);
+                    addPoints(score,itemWidth);
+                    addPoints(stars,1);
                 }
-                addScore(itemWidth);
+                if (blocks==19 && itemWidth>=1){
+                    message("You Win!!",score.innerText+" pts. "+stars.innerText+" stars");
+                    button.style.display='';
+                    return;
+                }
+                addPoints(score,itemWidth);
                 
                 vel+=0.5;
             }
@@ -98,12 +116,17 @@ function stop(){
     }
 }
 
-function addScore(points){
-    score.innerHTML=score.innerText*1+Math.round(itemWidth);
+function addPoints(elem,points){
+    elem.innerHTML=elem.innerText*1+Math.round(points);
+}
+
+function resetPoints(elem){
+    elem.innerHTML=0;
 }
     
 
 function start(){
+    reset();
     for(var i=0;i<childs.length;i++){
         game.removeChild(childs[i]);
     }
@@ -140,6 +163,25 @@ function move(item,start,vel){
     item.style.left=start+"px";
     
     lastTimeout=setTimeout(move,30,item,start+vel*dir,vel);
+}
+
+function exportImage(){
+    var ignored=document.getElementsByClassName("not-exportable");
+    for(var i=0;i<ignored.length;i++){
+        ignored[i].style.visibility='hidden';
+    }
+    html2canvas(document.querySelector("#game")).then(canvas => {
+        var link=document.createElement("a");
+        link.href=canvas.toDataURL();
+        link.download="tower-game-"+score.innerText;
+        link.appendChild(canvas);
+        link.style.display='none';
+        document.body.appendChild(link);
+        link.click();
+        for(var i=0;i<ignored.length;i++){
+            ignored[i].style.visibility='';
+        }
+    });
 }
 
 reset();
