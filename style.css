@@ -16,6 +16,11 @@ body{
     font-family:Arial, Helvetica, sans-serif;
 }
 
+a:link, a:visited, a:active{
+    color:var(--color-light);
+    text-decoration: none;
+}
+
 button{
     background-color: var(--color-medium);
     color: var(--color-light);

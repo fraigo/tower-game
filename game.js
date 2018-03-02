@@ -73,7 +73,6 @@ function stop(){
                 bw=bw-Math.abs(prevStart-currentPos);
                 if (bw<0){
                     alert("You loose");
-                    reset();
                     return;
                 }
                 if (currentPos>prevStart){
