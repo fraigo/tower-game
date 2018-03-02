@@ -83,7 +83,7 @@ function stop(){
                     currItem.style.width=bw+"px";
                     currItem.style.left=currentPos+Math.abs(prevStart-currentPos)+"px";
                 }
-                if(currentPos==prevStart){
+                if(Math.round(currentPos)==Math.round(prevStart)){
                     currItem.style.backgroundColor="#8F8";
                     addScore(bw);
                 }
