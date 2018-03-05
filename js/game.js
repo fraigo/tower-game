@@ -3,8 +3,11 @@ var game=document.getElementById("game");
 var button=document.getElementById("button");
 var score=document.getElementById("score");
 var stars=document.getElementById("star");
+var center=document.getElementById("center");
+var high=document.getElementById("high");
 
 var childs=[];
+var scorelist=[];
 
 function reset(){
     windowWidth=0;
@@ -42,10 +45,14 @@ function getViewPort(){
     viewportWidth=relX*100;
     viewportHeight=relY*100;
 
+
     game.style.width=viewportWidth+"px";
     game.style.height=viewportHeight+"px";
     game.style.left=((windowWidth-viewportWidth)/2)+"px";
     game.style.top=((windowHeight-viewportHeight)/2)+"px";
+
+    center.style.height=viewportHeight+"px";
+    high.style.height=viewportHeight+"px";
 
     itemHeight=Math.round(viewportHeight*defaultHeight/100);
     itemWidth=Math.round(viewportWidth*defaultWidth/100);
@@ -55,7 +62,7 @@ function getViewPort(){
 
 
 window.onresize=function(){
-    getViewPort();
+    //getViewPort();
 }
 
 window.document.onmouseup=function(){
@@ -70,7 +77,7 @@ window.document.onkeyup=function(ev){
 function message(title,text){
     var message=title;
     if (text){
-        message+=" "+text;
+        message+=" \n"+text;
     }
     alert(message);
 }
@@ -86,9 +93,10 @@ function stop(){
                 var prevEnd=prevStart+prevItem.style.width.split("p")[0]*1;
                 
                 itemWidth=Math.round(itemWidth-Math.abs(prevStart-currentPos));
-                if (itemWidth<1){
-                    message("You loose",score.innerText+" pts.");
-                    button.style.display='';
+                if (itemWidth<2){
+                    message("You loose.",score.innerText+" pts.");
+					registerScore();
+                    center.style.display='';
                     return;
                 }
                 if (currentPos>prevStart){
@@ -102,9 +110,10 @@ function stop(){
                     addPoints(score,itemWidth);
                     addPoints(stars,1);
                 }
-                if (blocks==19 && itemWidth>=1){
+                if (blocks==19 && itemWidth>=2){
                     message("You Win!!",score.innerText+" pts. "+stars.innerText+" stars");
-                    button.style.display='';
+                    center.style.display='';
+					registerScore();
                     return;
                 }
                 addPoints(score,itemWidth);
@@ -131,7 +140,7 @@ function start(){
         game.removeChild(childs[i]);
     }
     childs=[];
-    button.style.display='none';
+    center.style.display='none';
     nextBlock();
 }
 
@@ -184,4 +193,31 @@ function exportImage(){
     });
 }
 
+function registerScore(){
+	var hs=localStorage.getItem("hsc");
+	if (hs){
+		scorelist=JSON.parse(hs);
+	}
+	scorelist.push(score.innerText*1);
+	scorelist.sort(function(a, b){return b-a});
+	while(scorelist.length>5){
+		scorelist.pop();
+	}
+	localStorage.setItem("hsc",JSON.stringify(scorelist));
+	document.getElementById("scorelist").innerHTML=scorelist.join("\n");
+}
+
+function showScreen(hash){
+	if (hash=="highscores"){
+		high.style.display='';
+		center.style.display='none';
+	}else{
+		high.style.display='none';
+		center.style.display='';
+	}
+}
+
 reset();
+
+registerScore();
+showScreen(document.location.hash);

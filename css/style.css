@@ -48,7 +48,6 @@ button.start:hover{
 }
 
 #toolbar{
-    background-color: var(--color-toolbar);
     height:1.5em;
     position:absolute;
     width:100%;
@@ -88,6 +87,31 @@ button.start:hover{
     font-size:0.6em;
     color:#FF0;
     vertical-align: text-top;
+}
+
+div.overlay{
+	background-color:rgba(0,0,0,0.6);
+	position:absolute;
+	width:100%;
+	z-index:50;
+}
+
+#high{
+	text-align:center;
+}
+
+div.scores{
+	width: 60%;
+	border:1px solid var(--color-light);
+	display:inline-block;
+	margin-top:100px;
+	border-radius:5px;
+}
+
+div.scores > p{
+	font-family:courier,fixed;
+	color:var(--color-light);
+	white-space:pre;
 }
 
 .bar{
