@@ -94,6 +94,7 @@ function stop(){
                 
                 itemWidth=Math.round(itemWidth-Math.abs(prevStart-currentPos));
                 if (itemWidth<2){
+                    currItem.style.backgroundColor="#F88";
                     message("You loose.",score.innerText+" pts.");
 					registerScore();
                     center.style.display='';
@@ -112,6 +113,7 @@ function stop(){
                 }
                 if (blocks==19 && itemWidth>=2){
                     message("You Win!!",score.innerText+" pts. "+stars.innerText+" stars");
+                    currItem.style.backgroundColor="#FFF";
                     center.style.display='';
 					registerScore();
                     return;
@@ -175,7 +177,7 @@ function move(item,start,vel){
 }
 
 function exportImage(){
-    var ignored=document.getElementsByClassName("not-exportable");
+    var ignored=document.getElementsByClassName("overlay");
     for(var i=0;i<ignored.length;i++){
         ignored[i].style.visibility='hidden';
     }

@@ -25,19 +25,20 @@ button.start{
     color: var(--color-light);
     border-radius: 5px;
     margin-top:35vh;
-    padding:6px;
+    padding:8px;
     box-shadow: 0px 0px 10px rgba(255,255,255,0.5);
+    font-size: 1em;
 }
 
 button.start:hover{
     box-shadow: 0px 0px 10px rgba(255,255,255,0.9);
 }
 
-#links{
-	font-size:0.75em;
+.links{
+
 }
 
-#links:hover{
+.links:hover{
     text-shadow: 0px 0px 10px rgba(255,255,255,0.5);
 }
 
@@ -93,7 +94,8 @@ div.overlay{
 	background-color:rgba(0,0,0,0.6);
 	position:absolute;
 	width:100%;
-	z-index:50;
+    z-index:50;
+    font-size:0.75em;
 }
 
 #high{
@@ -105,13 +107,18 @@ div.scores{
 	border:1px solid var(--color-light);
 	display:inline-block;
 	margin-top:100px;
-	border-radius:5px;
+    border-radius:5px;
 }
 
 div.scores > p{
 	font-family:courier,fixed;
 	color:var(--color-light);
 	white-space:pre;
+}
+
+#github{
+    margin-top:50px;
+    font-size: 0.8em;
 }
 
 .bar{
