@@ -9,6 +9,7 @@ var title=document.getElementById("title");
 
 var childs=[];
 var scorelist=[];
+var gameStart,gameEnd,gameTime;
 
 function reset(){
     windowWidth=0;
@@ -137,6 +138,7 @@ function setText(elem,data){
     
 
 function start(){
+	gameStart=(new Date()).getTime();
     reset();
     for(var i=0;i<childs.length;i++){
         game.removeChild(childs[i]);
@@ -196,17 +198,26 @@ function exportImage(){
 }
 
 function registerScore(){
-	var hs=localStorage.getItem("hsc");
+	gameEnd=(new Date()).getTime;
+	gameTime=gameStart?(gameEnd-gameStart):0;
+	var hs=localStorage.getItem("score");
 	if (hs){
 		scorelist=JSON.parse(hs);
 	}
-	scorelist.push(score.innerText*1);
-	scorelist.sort(function(a, b){return b-a});
+	scorelist.push({points:score.innerText,stars:stars.innerText,time:gameTime});
+	scorelist.sort(function(a, b){return b.points*1-a.points*1});
 	while(scorelist.length>5){
 		scorelist.pop();
 	}
-	localStorage.setItem("hsc",JSON.stringify(scorelist));
-	document.getElementById("scorelist").innerHTML=scorelist.join("\n");
+	localStorage.setItem("score",JSON.stringify(scorelist));
+	var content="";
+	for(var i=0;i<scorelist.length;i++){
+		content+=scorelist[i].points.padStart(5,"0");
+		content+="  ";
+		content+=scorelist[i].stars.padStart(2," ")+"★";
+		content+="\n";
+	}
+	document.getElementById("scorelist").innerHTML=content;
 }
 
 function showScreen(hash){
