@@ -4,9 +4,21 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Tower Builder Game</title>
-    <meta name="keywords" content="Tower Builder Game in HTML/CSS/Javascript">
+    
+	<meta name="keywords" content="Tower Builder Game, HTML, CSS, Javascript">
 	<meta name="description" content="Tower Builder Game in pure HTML/CSS/Javascript. No Canvas or WebGL.">
-		
+	<meta property="og:title" content="Tower Builder Game"/>
+	<meta property="og:description" content="Tower Builder Game in pure HTML/CSS/Javascript. No Canvas or WebGL."/>
+	<meta property="og:url" content="https://fraigo.github.io/tower-game/"/>
+	<meta property="og:site_name" content="Tower Builder Game"/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:image" content="http://fraigo.github.io/tower-game/images/icon.png"/>
+	<meta property="og:image:width" content="254"/>
+	<meta property="og:image:height" content="254"/>
+	<link rel="shortcut icon" href="images/icon.png">
+	<link rel="icon" type="image/png" href="images/icon.png" sizes="254x254">
+	<link rel="apple-touch-icon" sizes="254x254" href="images/icon.png">
+	
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
     <script src="js/html2canvas.min.js" ></script>
@@ -21,7 +33,11 @@
             </div>
         </div>
 		<div id="center" class="overlay">
-			<button id="button" class="start not-exportable" onclick="start()">New Game</button>
+			<p id="title">
+				Tower<br>
+				Builder
+			</p>
+			<button id="button" class="start" onclick="start()">New Game</button>
 			<p class="links">
 				<a href="javascript:showScreen('highscores')" >High Scores</a>
 			</p>
@@ -40,7 +56,8 @@
 				</p>
 			</div>
 			<br>
-			<a href="javascript:showScreen('')" >Close</a>
+			<button id="close" class="close" onclick="showScreen('')">Close</button>
+			
 		</div>
     </div>
     <script src="js/game.js" ></script>

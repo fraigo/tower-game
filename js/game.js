@@ -5,6 +5,7 @@ var score=document.getElementById("score");
 var stars=document.getElementById("star");
 var center=document.getElementById("center");
 var high=document.getElementById("high");
+var title=document.getElementById("title");
 
 var childs=[];
 var scorelist=[];
@@ -30,8 +31,8 @@ function reset(){
     itemHeight=0;
 
     getViewPort();
-    resetPoints(score);
-    resetPoints(stars);
+    setText(score,0);
+    setText(stars,0);
 }
 
 
@@ -74,12 +75,11 @@ window.document.onkeyup=function(ev){
 }
 
 
-function message(title,text){
-    var message=title;
+function message(msg,text){
     if (text){
-        message+=" \n"+text;
+        msg+=" <br>"+text;
     }
-    alert(message);
+	setText(title,msg);
 }
 
 function stop(){
@@ -95,7 +95,7 @@ function stop(){
                 itemWidth=Math.round(itemWidth-Math.abs(prevStart-currentPos));
                 if (itemWidth<2){
                     currItem.style.backgroundColor="#F88";
-                    message("You loose.",score.innerText+" pts.");
+                    message("You loose!",score.innerText+" pts.");
 					registerScore();
                     center.style.display='';
                     return;
@@ -112,7 +112,7 @@ function stop(){
                     addPoints(stars,1);
                 }
                 if (blocks==19 && itemWidth>=2){
-                    message("You Win!!",score.innerText+" pts. "+stars.innerText+" stars");
+                    message("You Win!",score.innerText+" pts. "+stars.innerText+" stars");
                     currItem.style.backgroundColor="#FFF";
                     center.style.display='';
 					registerScore();
@@ -131,8 +131,8 @@ function addPoints(elem,points){
     elem.innerHTML=elem.innerText*1+Math.round(points);
 }
 
-function resetPoints(elem){
-    elem.innerHTML=0;
+function setText(elem,data){
+    elem.innerHTML=data;
 }
     
 
