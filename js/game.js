@@ -44,14 +44,27 @@ function getViewPort(){
     windowWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
     
-    viewportWidth=relX*100;
-    viewportHeight=relY*100;
+    windowRatio=windowWidth/windowHeight;
+    relRatio=relX/relY;
+    console.log(windowRatio,relRatio);
+    
+    var factor=100;
+    if (relRatio>windowRatio){
+        factor=Math.round(windowWidth/relX);
+    }else{
+        factor=Math.round(windowHeight/relY);
+    }
+    
+    viewportWidth=relX*factor;
+    viewportHeight=relY*factor;
+
+    console.log([viewportWidth,viewportHeight,windowWidth,windowHeight,window.innerWidth,window.innerHeight]);
 
 
     game.style.width=viewportWidth+"px";
     game.style.height=viewportHeight+"px";
     game.style.left=((windowWidth-viewportWidth)/2)+"px";
-    game.style.top=((windowHeight-viewportHeight)/2)+"px";
+    game.style.top=(Math.abs(windowHeight-viewportHeight)/2)+"px";
 
     center.style.height=viewportHeight+"px";
     high.style.height=viewportHeight+"px";
@@ -113,7 +126,7 @@ function stop(){
                     addPoints(stars,1);
                 }
                 if (blocks==19 && itemWidth>=2){
-                    message("You Win!",score.innerText+" pts. "+stars.innerText+" stars");
+                    message("You Win!",score.innerText+" pts.<br>"+stars.innerText+" stars");
                     currItem.style.backgroundColor="#FFF";
                     center.style.display='';
 					registerScore();
