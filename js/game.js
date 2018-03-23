@@ -90,7 +90,6 @@ function getViewPort(){
     itemWidth=Math.round(viewportWidth*defaultWidth/100);
     itemPoints=defaultWidth*100;
     maxBlocks=Math.floor((viewportHeight-30)/(itemHeight));
-    console.log(maxBlocks);
 
 }
 
@@ -251,8 +250,7 @@ function registerScore(){
         time:gameTime,
         level:currentLevel,
     });
-    console.log(JSON.stringify(scorelist,null," "));
-	scorelist.sort(function(a, b){return b.points*b.level*10000000-a.points*a.level*10000000});
+    scorelist.sort(function(a, b){return b.points*b.level*10000000-a.points*a.level*10000000});
 	while(scorelist.length>5){
 		scorelist.pop();
 	}
