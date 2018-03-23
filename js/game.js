@@ -2,14 +2,18 @@
 var game=document.getElementById("game");
 var button=document.getElementById("button");
 var score=document.getElementById("score");
+var level=document.getElementById("level");
 var stars=document.getElementById("star");
 var center=document.getElementById("center");
 var high=document.getElementById("high");
 var title=document.getElementById("title");
+var currentLevel=1;
 
 var childs=[];
 var scorelist=[];
 var gameStart,gameEnd,gameTime;
+var factor=100;
+var maxBlocks=18;
 
 function reset(){
     windowWidth=0;
@@ -18,22 +22,35 @@ function reset(){
     relY=4;
     blocks=0;
     defaultWidth=45;
-    defaultHeight=100/20;
+    defaultHeight=5;
+    defaultVel=3;
     viewportWidth=0;
     viewportHeight=0;
     prevItem=null;
     currItem=null;
-    vel=3;
+    vel=defaultVel;
     dir=1;
     lastTimeout=0;
+    factor=100;
     
     
     itemWidth=0;
     itemHeight=0;
 
+    if (currentLevel>=2){
+        defaultHeight-=currentLevel;
+        if (defaultHeight<1){
+            defaultHeight=1;
+        }
+        vel++;
+    }
+
     getViewPort();
-    setText(score,0);
-    setText(stars,0);
+    setText(level,currentLevel);
+    if (currentLevel==1){
+        setText(score,0);
+        setText(stars,0);    
+    }
 }
 
 
@@ -46,9 +63,9 @@ function getViewPort(){
     
     windowRatio=windowWidth/windowHeight;
     relRatio=relX/relY;
-    console.log(windowRatio,relRatio);
+    //console.log(windowRatio,relRatio);
     
-    var factor=100;
+    factor=100;
     if (relRatio>windowRatio){
         factor=Math.round(windowWidth/relX);
     }else{
@@ -58,7 +75,7 @@ function getViewPort(){
     viewportWidth=relX*factor;
     viewportHeight=relY*factor;
 
-    console.log([viewportWidth,viewportHeight,windowWidth,windowHeight,window.innerWidth,window.innerHeight]);
+    //console.log([viewportWidth,viewportHeight,windowWidth,windowHeight,window.innerWidth,window.innerHeight]);
 
 
     game.style.width=viewportWidth+"px";
@@ -71,9 +88,11 @@ function getViewPort(){
 
     itemHeight=Math.round(viewportHeight*defaultHeight/100);
     itemWidth=Math.round(viewportWidth*defaultWidth/100);
+    itemPoints=defaultWidth*100;
+    maxBlocks=Math.floor((viewportHeight-30)/(itemHeight));
+    console.log(maxBlocks);
 
 }
-
 
 
 window.onresize=function(){
@@ -88,6 +107,10 @@ window.document.onkeyup=function(ev){
        stop();
 }
 
+
+function nextStage(){
+
+}
 
 function message(msg,text){
     if (text){
@@ -107,11 +130,14 @@ function stop(){
                 var prevEnd=prevStart+prevItem.style.width.split("p")[0]*1;
                 
                 itemWidth=Math.round(itemWidth-Math.abs(prevStart-currentPos));
-                if (itemWidth<2){
+                itemPoints=Math.round(itemWidth*100*100/viewportWidth);
+                if (itemPoints<50){
                     currItem.style.backgroundColor="#F88";
                     message("You loose!",score.innerText+" pts.");
 					registerScore();
                     center.style.display='';
+                    currentLevel=1;
+                    button.innerHTML="New Game";
                     return;
                 }
                 if (currentPos>prevStart){
@@ -122,17 +148,19 @@ function stop(){
                 }
                 if(Math.round(currentPos)==Math.round(prevStart)){
                     currItem.style.backgroundColor="#8F8";
-                    addPoints(score,itemWidth);
+                    addPoints(score,itemPoints);
                     addPoints(stars,1);
                 }
-                if (blocks==19 && itemWidth>=2){
-                    message("You Win!",score.innerText+" pts.<br>"+stars.innerText+" stars");
+                if (blocks==maxBlocks && itemPoints>=50){
+                    message("Level Completed!",score.innerText+" pts.<br>"+stars.innerText+" stars");
                     currItem.style.backgroundColor="#FFF";
                     center.style.display='';
-					registerScore();
-                    return;
+                    registerScore();
+                    currentLevel++;
+                    button.innerHTML="Level "+currentLevel;
+					return;
                 }
-                addPoints(score,itemWidth);
+                addPoints(score,itemPoints);
                 
                 vel+=0.5;
             }
@@ -172,7 +200,7 @@ function nextBlock(){
     currItem.style.top=(viewportHeight-itemHeight*blocks)+"px";
     childs.push(currItem);
     game.appendChild(currItem);
-    console.log([blocks,vel,itemWidth]);
+    console.log([blocks,vel,itemWidth,itemPoints]);
     move(currItem,0,vel);
 }
 
@@ -213,19 +241,27 @@ function exportImage(){
 function registerScore(){
 	gameEnd=(new Date()).getTime;
 	gameTime=gameStart?(gameEnd-gameStart):0;
-	var hs=localStorage.getItem("score");
+	var hs=localStorage.getItem("localscore");
 	if (hs){
 		scorelist=JSON.parse(hs);
 	}
-	scorelist.push({points:score.innerText,stars:stars.innerText,time:gameTime});
-	scorelist.sort(function(a, b){return b.points*1-a.points*1});
+	scorelist.push({
+        points:score.innerText,
+        stars:stars.innerText,
+        time:gameTime,
+        level:currentLevel,
+    });
+    console.log(JSON.stringify(scorelist,null," "));
+	scorelist.sort(function(a, b){return b.points*b.level*10000000-a.points*a.level*10000000});
 	while(scorelist.length>5){
 		scorelist.pop();
 	}
-	localStorage.setItem("score",JSON.stringify(scorelist));
+	localStorage.setItem("localScore",JSON.stringify(scorelist));
 	var content="";
 	for(var i=0;i<scorelist.length;i++){
-		content+=scorelist[i].points.padStart(5,"0");
+		content+="Lv "+(scorelist[i].level?scorelist[i].level:1);
+		content+="  ";
+		content+=scorelist[i].points.padStart(6,"0");
 		content+="  ";
 		content+=scorelist[i].stars.padStart(2," ")+"★";
 		content+="\n";

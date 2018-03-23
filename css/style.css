@@ -89,14 +89,25 @@ button.start{
 
 #star{
     color:#FF0;
-    font-size:0.6em;
+    font-size:0.8em;
     padding:3px;
 }
 #star::before{
     content:"★";
-    font-size:0.6em;
+    font-size:0.8em;
     color:#FF0;
     vertical-align: text-top;
+}
+
+#level{
+    color:#0FF;
+    font-size:1em;
+    padding:3px;
+}
+#level::before{
+    content:"Lv ";
+    font-size:1em;
+    color:#0FF;
 }
 
 div.overlay{
@@ -128,9 +139,20 @@ div.scores > p{
 #github{
     margin-top:50px;
     font-size: 0.8em;
+    position:absolute;
+    bottom:10px;
+    width:100%;
 }
 
 .bar{
     background-color: var(--color-bar);
 }
 
+
+
+@media (max-width: 319px){
+
+    body{
+        font-size:14px;
+    }
+}
