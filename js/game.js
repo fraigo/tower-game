@@ -161,7 +161,7 @@ function stop(){
                 }
                 addPoints(score,itemPoints);
                 
-                vel+=0.5;
+                vel+=0.25;
             }
             nextBlock();
         },1000);
